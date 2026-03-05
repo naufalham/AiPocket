@@ -1,0 +1,6 @@
+staging-settings:
+  workflow_settings:
+    name: "market-settler-staging"
+    entrypoint: "./main.ts"
+    config: "./config.staging.json"
+    secrets: "../secrets.yaml"

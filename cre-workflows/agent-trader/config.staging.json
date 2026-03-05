@@ -1,0 +1,17 @@
+{
+  "geminiModel": "gemini-2.0-flash",
+  "schedule": "0 0 */4 * * *",
+  "evms": [
+    {
+      "marketAddress": "0x07d85a17c65b2c5ef702bfD61bc501bb2537f287",
+      "registryAddress": "0x31f44fE2D53074a7D6Aee9078B201cdf93398aF3",
+      "chainSelectorName": "ethereum-testnet-sepolia-base-1",
+      "gasLimit": "1000000",
+      "dataFeeds": {
+        "ETH_USD": "0x4aDC67D910FF5F7a4f751B49C4F0e218F30F8370",
+        "BTC_USD": "0x0FB99723Aee6f420beAD13e6bBB79cE547AcEd0d",
+        "LINK_USD": "0xb113F5A928BCfF189C998ab20d753a47F9dE5A61"
+      }
+    }
+  ]
+}

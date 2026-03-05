@@ -1,0 +1,351 @@
+@import "tailwindcss";
+
+:root {
+  --deep-space: #0F0F23;
+  --midnight: #1A1A2E;
+  --card-bg: #16213E;
+  --electric-cyan: #00F5FF;
+  --neon-pink: #FF00FF;
+  --golden: #FFD700;
+  --neon-green: #00FF88;
+  --hot-pink: #FF3366;
+  --amber: #FFB800;
+  --text-primary: #FFFFFF;
+  --text-muted: #8B92B0;
+  --background: var(--deep-space);
+  --foreground: var(--text-primary);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-rajdhani);
+  --font-mono: var(--font-ibm-plex-mono);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--deep-space);
+  color: var(--text-primary);
+  font-family: var(--font-rajdhani), 'Rajdhani', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Animated background layer */
+.animated-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(0, 245, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.15) 0%, transparent 50%);
+}
+
+/* Grid overlay */
+.grid-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--deep-space);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 245, 255, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 245, 255, 0.6);
+}
+
+/* Neon glow utilities */
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.4);
+}
+
+.glow-pink {
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+}
+
+.text-gradient-cyan-pink {
+  background: linear-gradient(135deg, var(--electric-cyan), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(0, 245, 255, 0.5); }
+  50% { opacity: 0.7; box-shadow: 0 0 20px rgba(0, 245, 255, 0.9); }
+}
+
+@keyframes blink-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.3); }
+}
+
+@keyframes scan-line {
+  0% { top: -5%; }
+  100% { top: 105%; }
+}
+
+/* Auto-animated particles */
+.auto-particles-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.auto-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #00F5FF;
+  opacity: 0.4;
+  animation: floatUp linear infinite;
+  box-shadow: 0 0 10px rgba(0, 245, 255, 0.6);
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-100px) translateX(var(--drift));
+    opacity: 0;
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-blink {
+  animation: blink-dot 2s ease-in-out infinite;
+}
+
+/* ─── Mobile / Desktop visibility toggles ─── */
+.mobile-only  { display: none; }
+.desktop-only { display: block; }
+
+/* ─── Navbar wallet buttons ─── */
+.nb-connect {
+  padding: 12px 28px;
+  font-size: 16px;
+}
+.nb-account {
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+/* ─── Responsive layout wrapper ─── */
+.page-main-wrapper {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* ─── Responsive grid classes ─── */
+.grid-markets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 24px;
+}
+
+.grid-agents {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.grid-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+.grid-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.grid-info-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.grid-4-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* Table responsive wrapper */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 768px) {
+  /* Layout wrapper */
+  .page-main-wrapper {
+    padding: 16px 16px;
+  }
+
+  /* Navbar */
+  .navbar-card {
+    padding: 12px 16px !important;
+    border-radius: 12px !important;
+    margin-bottom: 24px !important;
+  }
+
+  /* Market / agent / feature grids → single column */
+  .grid-markets,
+  .grid-agents,
+  .grid-features {
+    grid-template-columns: 1fr;
+  }
+
+  /* Steps grid → 2 cols on medium mobile, 1 col on tiny */
+  .grid-steps,
+  .grid-info-cards {
+    grid-template-columns: 1fr;
+  }
+
+  /* Dashboard how-it-works 4-col → 2 cols then 1 col */
+  .grid-4-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Empty state — reduce large padding */
+  .empty-xl {
+    padding: 60px 20px !important;
+  }
+
+  /* VRF Banner inner — stack */
+  .vrf-inner {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  /* Market detail — YES/NO buttons don't shrink */
+  .bet-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Leaderboard table — hide less important cols on mobile */
+  .lb-col-hide {
+    display: none;
+  }
+
+  /* Register grid — collapse handled in component already */
+
+  /* Market/agent cards — reduce padding on small screens */
+  .market-card-ref {
+    padding: 20px !important;
+  }
+
+  /* VRF banner padding */
+  .vrf-banner-pad {
+    padding: 24px 20px !important;
+  }
+
+  /* Scoring section */
+  .scoring-pad {
+    padding: 24px 20px !important;
+  }
+
+  /* Page headers */
+  .page-header-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  /* Filter tabs — scrollable horizontal */
+  .filter-tabs-row {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-tabs-row::-webkit-scrollbar { display: none; }
+
+  /* Show/hide layout sections */
+  .mobile-only {
+    display: block;
+    margin: -16px -16px 0;
+  }
+  .desktop-only { display: none; }
+
+  /* Navbar wallet buttons — shrink on mobile */
+  .nb-connect {
+    padding: 9px 16px;
+    font-size: 14px;
+  }
+  .nb-chain {
+    display: none !important;
+  }
+  .nb-account {
+    padding: 9px 14px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-4-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .page-main-wrapper {
+    padding: 12px 12px;
+  }
+
+  .mobile-only {
+    margin: -12px -12px 0;
+  }
+}

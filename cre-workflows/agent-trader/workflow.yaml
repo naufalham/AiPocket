@@ -1,0 +1,6 @@
+staging-settings:
+  workflow_settings:
+    name: "agent-trader-staging"
+    entrypoint: "./main.ts"
+    config: "./config.staging.json"
+    secrets: "../secrets.yaml"
