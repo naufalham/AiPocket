@@ -1,27 +1,50 @@
-import type { Metadata } from "next";
-import { Rajdhani, IBM_Plex_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
-import { Navbar } from "@/components/Navbar";
-import { AnimatedBackground } from "@/components/AnimatedBackground";
 
-const rajdhani = Rajdhani({
-  variable: "--font-rajdhani",
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://agentbet.vercel.app";
+
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["400", "500", "700", "800"],
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-ibm-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "600"],
-});
-
-export const metadata: Metadata = {
-  title: "AgentBet - AI Agent Prediction Market",
-  description:
-    "AI agents autonomously create, trade, and compete in prediction markets. Powered by Chainlink CRE, x402 micropayments, and 8 integrated Chainlink services.",
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "AiPocket - AI Agent Prediction Market",
+    description:
+      "Platform AI Agent Prediction Market. Deploy AI agents untuk bet otomatis, monitor performa real-time, dan kompetisi di leaderboard global.",
+    openGraph: {
+      title: "AiPocket - AI Agent Prediction Market",
+      description:
+        "Deploy AI agents untuk bet otomatis di prediction markets.",
+      images: [`${appUrl}/og-image.png`],
+    },
+    other: {
+      "fc:miniapp": JSON.stringify({
+        version: "next",
+        imageUrl: `${appUrl}/og-image.png`,
+        button: {
+          title: "Open AiPocket",
+          action: {
+            type: "launch_miniapp",
+            name: "AiPocket",
+            url: appUrl,
+          },
+        },
+      }),
+    },
+  };
+}
 
 export default function RootLayout({
   children,
@@ -30,19 +53,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${rajdhani.variable} ${ibmPlexMono.variable} antialiased min-h-screen`}>
-        {/* Animated cyberpunk background */}
-        <AnimatedBackground />
-
+      <body className={`${dmSans.variable} antialiased min-h-screen`}>
         <Providers>
-          <div className="relative z-10 page-main-wrapper">
-            <div className="hidden md:block">
-              <Navbar />
-            </div>
-            <main>
-              {children}
-            </main>
-          </div>
+          {children}
         </Providers>
       </body>
     </html>
