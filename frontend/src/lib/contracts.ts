@@ -1,24 +1,24 @@
 import { type Address } from "viem";
-import { baseSepolia } from "viem/chains";
+import { polkadotHubTestnet } from "./wagmi";
 
-// Contract addresses - update after deployment
+// Contract addresses — Polkadot Hub Testnet (Chain ID: 420420417)
 export const CONTRACTS = {
   predictionMarket: (process.env.NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS ||
-    "0x07d85a17c65b2c5ef702bfD61bc501bb2537f287") as Address,
+    "0x6D09ae07fb5E1166C5aA88De6c3953dF4653131a") as Address,
   agentRegistry: (process.env.NEXT_PUBLIC_AGENT_REGISTRY_ADDRESS ||
-    "0x31f44fE2D53074a7D6Aee9078B201cdf93398aF3") as Address,
+    "0x2b97c0732cEb3687063802fEBa13d159Aec85d6F") as Address,
   agentIdentity: (process.env.NEXT_PUBLIC_AGENT_IDENTITY_ADDRESS ||
-    "0x7b2aeD0cDb291268f3C006a6E9F202d288C46A85") as Address,
+    "0xd322bE028A6F1437e98cb0C5Ba493b335C262407") as Address,
   agentReputation: (process.env.NEXT_PUBLIC_AGENT_REPUTATION_ADDRESS ||
-    "0xB3Bf0F06B900D88A6d0BC0e6ADDE13c387eECfCE") as Address,
+    "0x28341D31aDf45A87DA16b521Be401e15Ed50B158") as Address,
   rewardDistributor: (process.env.NEXT_PUBLIC_REWARD_DISTRIBUTOR_ADDRESS ||
-    "0xad507DE51cfC6b37E277074fF80f2a23Dc8440c1") as Address,
+    "0x44AcB16DeE7Ec63F79Cd5dBb9A2f0A7c078EA9E2") as Address,
 };
 
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
-export const CHAIN = baseSepolia;
+export const CHAIN = polkadotHubTestnet;
 
 // Enums matching Solidity
 export const MarketStatus = {

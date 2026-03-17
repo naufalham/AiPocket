@@ -725,13 +725,66 @@ body {
   box-shadow: 5px 5px 0 0 #000;
 }
 
-/* Compatibility: other pages use mobile-only/desktop-only wrappers.
-   For mini app, always show mobile layout, never show desktop. */
+/* ── Desktop Navigation Bar wrapper ── */
+.desktop-topnav {
+  display: none;
+}
+
+/* Mobile: show mobile layouts, hide desktop */
 .mobile-only {
   display: block;
 }
 .desktop-only {
   display: none;
+}
+
+/* ══════════════════════════════════════════
+   DESKTOP RESPONSIVE STYLES (≥ 768px)
+══════════════════════════════════════════ */
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 0;
+    background: #f0f4f8;
+  }
+
+  /* ── Sticky desktop navbar ── */
+  .desktop-topnav {
+    display: block;
+    background: #f0f4f8;
+    padding: 16px 40px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .desktop-topnav > * {
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+
+  /* ── Hide mobile chrome ── */
+  .bottom-nav { display: none !important; }
+  .top-banner { display: none !important; }
+
+  /* ── Layout section toggle ── */
+  .mobile-only { display: none !important; }
+  .desktop-only {
+    display: block !important;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 40px;
+  }
+
+  /* ── Widen dashboard/markets container ── */
+  .container {
+    max-width: 1280px;
+    padding: 32px 40px;
+  }
+
+  /* ── Stats grid: 4 cols on desktop ── */
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 /* Font variable aliases for other pages that reference old font vars */

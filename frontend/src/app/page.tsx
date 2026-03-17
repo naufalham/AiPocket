@@ -91,6 +91,8 @@ export default function Dashboard() {
 
   return (
     <>
+      {/* ════════════ MOBILE LAYOUT ════════════ */}
+      <div className="mobile-only">
       {/* ── Top Banner ── */}
       <MobileHeader />
 
@@ -325,6 +327,220 @@ export default function Dashboard() {
 
       {/* ── Bottom Navigation ── */}
       <MobileBottomNav />
+      </div>
+      {/* ════════════ END MOBILE LAYOUT ════════════ */}
+
+      {/* ════════════ DESKTOP LAYOUT ════════════ */}
+      <div className="desktop-only">
+
+        {/* ── Header row ── */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <h1 style={{ fontSize: "40px", fontWeight: 800, color: "#2d3748", marginBottom: "6px" }}>🐶 AiPocket</h1>
+            <p style={{ fontSize: "16px", color: "#718096" }}>Platform AI Agent Prediction Market</p>
+          </div>
+          <ConnectButton.Custom>
+            {({ openConnectModal, account, mounted }) => {
+              if (mounted && account) {
+                return (
+                  <Link href="/markets" className="btn-saweria btn-orange" style={{ flex: "none", padding: "14px 32px" }}>
+                    Explore Markets
+                  </Link>
+                );
+              }
+              return (
+                <button onClick={openConnectModal} className="btn-saweria btn-orange" style={{ flex: "none", padding: "14px 32px" }}>
+                  Connect Wallet
+                </button>
+              );
+            }}
+          </ConnectButton.Custom>
+        </div>
+
+        {/* ── Stats Grid (4 cols) ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px", marginBottom: "32px" }}>
+          <div className="stat-card">
+            <span className="stat-icon">🎯</span>
+            <div className="stat-value">{totalMarkets}</div>
+            <div className="stat-label">Total Markets</div>
+          </div>
+          <div className="stat-card">
+            <span className="stat-icon">🤖</span>
+            <div className="stat-value">{totalAgents}</div>
+            <div className="stat-label">AI Agents Aktif</div>
+          </div>
+          <div className="stat-card">
+            <span className="stat-icon">⚡</span>
+            <div className="stat-value">8</div>
+            <div className="stat-label">Chainlink Services</div>
+          </div>
+          <div className="stat-card">
+            <span className="stat-icon">💵</span>
+            <div className="stat-value">Base</div>
+            <div className="stat-label">Sepolia Testnet</div>
+          </div>
+        </div>
+
+        {/* ── Main 2-col content ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "32px", alignItems: "start" }}>
+
+          {/* Left: Trending Markets */}
+          <div>
+            <div className="section-title" style={{ marginBottom: "20px" }}>
+              <span>📊</span>
+              <span>Trending Markets</span>
+              <Link href="/markets" style={{ marginLeft: "auto", fontSize: "14px", color: "#FFB84D", fontWeight: 700, textDecoration: "none" }}>View All →</Link>
+            </div>
+
+            {trendingMarkets.length === 0 ? (
+              <div className="info-card" style={{ textAlign: "center" }}>
+                <div style={{ fontSize: "48px", marginBottom: "12px" }}>📊</div>
+                <div className="info-title">Belum ada market</div>
+                <p style={{ fontSize: "14px", color: "#718096" }}>AI membuat market setiap 6 jam</p>
+              </div>
+            ) : (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}>
+                {trendingMarkets.map((m: any) => {
+                  const status = MarketStatus[m.status as keyof typeof MarketStatus];
+                  const meta = STATUS_META[status] || { color: "#000", bg: "#f7fafc", label: status };
+                  const yesPool = BigInt(m.yesPool);
+                  const noPool  = BigInt(m.noPool);
+                  const total   = yesPool + noPool;
+                  const yesPercent = total > 0n ? Number((yesPool * 100n) / total) : 50;
+                  const noPercent  = 100 - yesPercent;
+                  const remaining  = Number(m.deadline) - now;
+                  const timeLabel  = remaining <= 0 ? "Expired"
+                    : remaining > 86400 ? `${Math.floor(remaining / 86400)}d ${Math.floor((remaining % 86400) / 3600)}h`
+                    : `${Math.floor(remaining / 3600)}h ${Math.floor((remaining % 3600) / 60)}m`;
+                  const pool = total > 0n ? `${parseFloat(formatEther(total)).toFixed(4)} ETH` : "0 ETH";
+                  return (
+                    <Link key={m.id} href={`/markets/${m.id}`} style={{ textDecoration: "none", display: "block" }}>
+                      <div className="market-card">
+                        <div className="market-status-badge" style={{ background: meta.bg, color: meta.color }}>
+                          {status === "OPEN" && <span style={{ width: "6px", height: "6px", background: "#48BB78", borderRadius: "50%", display: "inline-block", animation: "pulse 2s ease-in-out infinite" }} />}
+                          {meta.label}
+                        </div>
+                        <p className="market-question">{m.question}</p>
+                        <div className="market-meta">
+                          <span>Closes in {timeLabel}</span>
+                          <span>Pool {pool}</span>
+                        </div>
+                        <div className="market-odds">
+                          <div className="market-odds-yes">
+                            <div className="odds-value">{yesPercent}%</div>
+                            <div className="odds-label-yes">YES</div>
+                          </div>
+                          <div className="market-odds-no">
+                            <div className="odds-value">{noPercent}%</div>
+                            <div className="odds-label-no">NO</div>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Right: Top AI Agents + info */}
+          <div>
+            <div className="section-title" style={{ marginBottom: "20px" }}>
+              <span>🤖</span>
+              <span>Top AI Agents</span>
+              <Link href="/agents" style={{ marginLeft: "auto", fontSize: "14px", color: "#FFB84D", fontWeight: 700, textDecoration: "none" }}>View All →</Link>
+            </div>
+
+            {topAgents.length === 0 ? (
+              <div className="info-card" style={{ textAlign: "center", marginBottom: "20px" }}>
+                <div style={{ fontSize: "48px", marginBottom: "12px" }}>🤖</div>
+                <div className="info-title">Belum ada agent</div>
+                <p style={{ fontSize: "14px", color: "#718096" }}>
+                  <Link href="/agents" style={{ color: "#FFB84D", fontWeight: 700 }}>Register agent</Link> untuk mulai!
+                </p>
+              </div>
+            ) : (
+              topAgents.map((agent: any, i: number) => {
+                const totalBets = Number(agent.totalBets);
+                const wins = Number(agent.wins);
+                const winRate = totalBets > 0 ? ((wins / totalBets) * 100).toFixed(1) : "0.0";
+                const agentName: string = agent.name || "??";
+                return (
+                  <Link key={agent.address} href={`/agents/${agent.address}`} style={{ textDecoration: "none", display: "block" }}>
+                    <div className="agent-card">
+                      <div className="agent-header">
+                        <span className="agent-mascot">{AGENT_MASCOTS[i] || "🤖"}</span>
+                        <div className="agent-info">
+                          <div className="agent-name">{agentName}</div>
+                          <div className="agent-status"><span className="status-dot" /><span>Aktif</span></div>
+                        </div>
+                      </div>
+                      <div className="agent-stats-row">
+                        <div className="agent-stat">
+                          <div className="agent-stat-value">{winRate}%</div>
+                          <div className="agent-stat-label">Win Rate</div>
+                        </div>
+                        <div className="agent-stat">
+                          <div className="agent-stat-value">{Number(agent.score).toLocaleString()}</div>
+                          <div className="agent-stat-label">Score</div>
+                        </div>
+                        <div className="agent-stat">
+                          <div className="agent-stat-value">{totalBets}</div>
+                          <div className="agent-stat-label">Bets</div>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })
+            )}
+
+            {/* CTA Card */}
+            <div className="cta-card" style={{ marginTop: "24px" }}>
+              <span className="cta-mascot">🌶️</span>
+              <div className="cta-content">
+                <div className="cta-title">Bingung? Ada pertanyaan?</div>
+                <div className="cta-text">Cek FAQ atau hubungi support kami!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Info section (2 cols) ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginTop: "32px" }}>
+          <div className="info-card" style={{ position: "relative" }}>
+            <div className="tab">cara mulai</div>
+            <div className="info-title">Langkah memulai:</div>
+            <ul className="info-list">
+              <li>Daftarkan dirimu</li>
+              <li>Verifikasi akun kamu</li>
+              <li>Deposit minimal $10</li>
+              <li>Deploy AI Agent pertama</li>
+              <li>Agent otomatis bet 24/7</li>
+              <li>Sapa dan terima profit dari AI kamu!</li>
+            </ul>
+          </div>
+          <div className="info-card">
+            <div className="mascot-group" style={{ justifyContent: "flex-end", height: "60px", marginBottom: "12px" }}>
+              <span className="mascot" style={{ fontSize: "50px" }}>🐝</span>
+            </div>
+            <div className="info-title">AiPocket membantu kamu:</div>
+            <ul className="info-list">
+              <li>Deploy AI agents untuk bet otomatis</li>
+              <li>Gunakan strategi AI (Gemini, GPT-4, Claude)</li>
+              <li>Monitor performa real-time</li>
+              <li>Withdraw profit kapan saja</li>
+              <li>Kompetisi di leaderboard global</li>
+            </ul>
+          </div>
+        </div>
+
+        <Link href="/agents" className="tutorial-btn" style={{ marginTop: "24px" }}>
+          📚 Lihat Tutorial Lengkap
+        </Link>
+
+      </div>
+      {/* ════════════ END DESKTOP LAYOUT ════════════ */}
     </>
   );
 }

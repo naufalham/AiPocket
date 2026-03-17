@@ -115,6 +115,8 @@ export default function MarketsPage() {
 
   return (
     <>
+      {/* ════════════ MOBILE LAYOUT ════════════ */}
+      <div className="mobile-only">
       {/* ── Top Banner ── */}
       <MobileHeader />
 
@@ -330,6 +332,170 @@ export default function MarketsPage() {
 
       {/* ── Bottom Navigation ── */}
       <MobileBottomNav />
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
+      </div>
+      {/* ════════════ END MOBILE LAYOUT ════════════ */}
+
+      {/* ════════════ DESKTOP LAYOUT ════════════ */}
+      <div className="desktop-only">
+
+        {/* ── Header ── */}
+        <div style={{ marginBottom: "28px" }}>
+          <h1 style={{ fontSize: "40px", fontWeight: 800, color: "#2d3748", marginBottom: "8px" }}>
+            📊 Prediction Markets
+          </h1>
+          <p style={{ fontSize: "16px", color: "#718096" }}>AI-created markets powered by Chainlink</p>
+        </div>
+
+        {/* ── Stats Bar (4 cols) ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px", marginBottom: "28px" }}>
+          <div className="stat-card" style={{ padding: "18px" }}>
+            <div style={{ fontSize: "11px", color: "#718096", fontWeight: 600, marginBottom: "4px" }}>Total Markets</div>
+            <div style={{ fontSize: "28px", fontWeight: 800, color: "#000" }}>{marketCount}</div>
+          </div>
+          <div className="stat-card" style={{ padding: "18px" }}>
+            <div style={{ fontSize: "11px", color: "#718096", fontWeight: 600, marginBottom: "4px" }}>Live Now</div>
+            <div style={{ fontSize: "28px", fontWeight: 800, color: "#48BB78" }}>{liveCount}</div>
+          </div>
+          <div className="stat-card" style={{ padding: "18px" }}>
+            <div style={{ fontSize: "11px", color: "#718096", fontWeight: 600, marginBottom: "4px" }}>Total Volume</div>
+            <div style={{ fontSize: "28px", fontWeight: 800, color: "#000" }}>
+              {totalVolume > 0n ? `${parseFloat(formatEther(totalVolume)).toFixed(2)}` : "0"} ETH
+            </div>
+          </div>
+          <div className="stat-card" style={{ padding: "18px" }}>
+            <div style={{ fontSize: "11px", color: "#718096", fontWeight: 600, marginBottom: "4px" }}>AI Agents Betting</div>
+            <div style={{ fontSize: "28px", fontWeight: 800, color: "#000" }}>{totalAgentsBetting}</div>
+          </div>
+        </div>
+
+        {/* ── Filter Tabs ── */}
+        <div style={{ display: "flex", gap: "10px", marginBottom: "24px", flexWrap: "wrap" }}>
+          {filters.map((f) => {
+            const isActive = filter === f.key;
+            return (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                style={{
+                  background: isActive ? "#FFB84D" : "#fff",
+                  border: "2px solid #000",
+                  padding: "10px 24px",
+                  borderRadius: "10px",
+                  color: "#000",
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  transition: "all 0.1s ease",
+                  boxShadow: isActive ? "3px 3px 0 0 #000" : "2px 2px 0 0 #000",
+                  fontFamily: "var(--font-dm-sans), 'DM Sans', sans-serif",
+                }}
+              >{f.label}</button>
+            );
+          })}
+        </div>
+
+        {/* ── Loading ── */}
+        {loading && (
+          <div style={{ textAlign: "center", padding: "80px 0", color: "#718096" }}>
+            <div style={{
+              width: "40px", height: "40px", borderRadius: "50%",
+              border: "3px solid #e2e8f0", borderTopColor: "#FFB84D",
+              animation: "spin 0.8s linear infinite", margin: "0 auto 16px",
+            }} />
+            <span style={{ fontSize: "14px", fontWeight: 600 }}>Loading markets...</span>
+          </div>
+        )}
+
+        {/* ── Market Cards Grid (3 cols) ── */}
+        {!loading && filtered.length > 0 && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
+            {filtered.map((m: any) => {
+              const { status, meta, yesPercent, remaining, timeLabel, pool } = getMarketDisplay(m);
+              return (
+                <Link key={m.id} href={`/markets/${m.id}`} style={{ textDecoration: "none", display: "block" }}>
+                  <div className="market-card">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                      <div className="market-status-badge" style={{ background: meta.bg, color: meta.color }}>
+                        {meta.dot && <span style={{ width: "6px", height: "6px", background: "#48BB78", borderRadius: "50%", display: "inline-block", animation: "pulse 2s ease-in-out infinite" }} />}
+                        {meta.label}
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        {m.isAgentCreated && (
+                          <span style={{ padding: "3px 8px", borderRadius: "8px", fontSize: "10px", fontWeight: 700, color: "#fff", background: "#FFB84D", border: "2px solid #000" }}>AI</span>
+                        )}
+                        <span style={{ fontSize: "12px", color: "#718096", fontWeight: 600 }}>#{String(m.id).padStart(4, "0")}</span>
+                      </div>
+                    </div>
+                    <p className="market-question">{m.question}</p>
+                    <div className="market-meta">
+                      <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                        <span style={{ fontSize: "10px", color: "#a0aec0" }}>{remaining <= 0 ? "Closed" : "Closes In"}</span>
+                        <span style={{ fontWeight: 700, color: remaining <= 0 ? "#E53E3E" : "#2d3748" }}>{timeLabel}</span>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                        <span style={{ fontSize: "10px", color: "#a0aec0" }}>Pool Size</span>
+                        <span style={{ fontWeight: 700, color: "#48BB78" }}>{pool}</span>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                        <span style={{ fontSize: "10px", color: "#a0aec0" }}>Bets</span>
+                        <span style={{ fontWeight: 700 }}>{Number(m.totalBettors)}</span>
+                      </div>
+                    </div>
+                    <div className="market-odds">
+                      <div className="market-odds-yes">
+                        <div className="odds-value">{yesPercent}%</div>
+                        <div className="odds-label-yes">YES</div>
+                      </div>
+                      <div className="market-odds-no">
+                        <div className="odds-value">{100 - yesPercent}%</div>
+                        <div className="odds-label-no">NO</div>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: "12px", color: "#718096", marginTop: "12px", display: "flex", alignItems: "center", gap: "6px", fontWeight: 600 }}>
+                      {status === "SETTLEMENT_REQUESTED"
+                        ? <span>⏳ Verifying result via Chainlink oracle...</span>
+                        : <span>🤖 {Number(m.totalBettors)} AI agents betting</span>}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ── Empty State ── */}
+        {!loading && filtered.length === 0 && (
+          <div style={{
+            background: "#fff", border: "3px solid #000", borderRadius: "16px",
+            padding: "60px 40px", textAlign: "center", boxShadow: "5px 5px 0 0 #000",
+          }}>
+            <div style={{ fontSize: "72px", marginBottom: "20px" }}>📊</div>
+            <h2 style={{ fontSize: "28px", fontWeight: 800, color: "#2d3748", marginBottom: "12px" }}>
+              {filter === "all" ? "Belum Ada Market" : `Belum Ada Market ${STATUS_META[filter]?.label ?? filter}`}
+            </h2>
+            <p style={{ fontSize: "16px", color: "#718096", lineHeight: 1.6, maxWidth: "480px", margin: "0 auto 32px" }}>
+              Markets dibuat otomatis oleh AI agents setiap 6 jam via Chainlink CRE workflows
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", maxWidth: "800px", margin: "0 auto" }}>
+              {INFO_CARDS.map((card) => (
+                <div key={card.title} style={{
+                  background: "#f7fafc", border: "2px solid #e2e8f0",
+                  borderRadius: "12px", padding: "20px", textAlign: "left",
+                }}>
+                  <div style={{ fontWeight: 700, fontSize: "15px", marginBottom: "8px", color: "#2d3748" }}>{card.icon} {card.title}</div>
+                  <div style={{ fontSize: "13px", color: "#718096", lineHeight: 1.5 }}>{card.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+      </div>
+      {/* ════════════ END DESKTOP LAYOUT ════════════ */}
 
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }

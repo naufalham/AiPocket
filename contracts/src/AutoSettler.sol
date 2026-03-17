@@ -101,4 +101,14 @@ contract AutoSettler {
     function resetLastCheckedId() external {
         lastCheckedId = 0;
     }
+
+    /// @notice Convenience function for off-chain keepers: check + execute in one call
+    /// @dev Call this from a cron job or off-chain bot — no Chainlink Automation required
+    function runSettlement() external returns (uint256 settled) {
+        (bool needed, bytes memory data) = this.checkUpkeep("");
+        if (!needed) return 0;
+        this.performUpkeep(data);
+        uint256[] memory ids = abi.decode(data, (uint256[]));
+        return ids.length;
+    }
 }

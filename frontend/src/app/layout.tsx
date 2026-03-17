@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
+import { Navbar } from "@/components/Navbar";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://agentbet.vercel.app";
 
@@ -55,6 +56,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${dmSans.variable} antialiased min-h-screen`}>
         <Providers>
+          <div className="desktop-topnav">
+            <Navbar />
+          </div>
           {children}
         </Providers>
       </body>

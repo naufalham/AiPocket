@@ -10,11 +10,9 @@ import "../src/RewardDistributor.sol";
 import "../src/AutoSettler.sol";
 
 contract Deploy is Script {
-    // Base Sepolia CRE Forwarder
-    address constant CRE_FORWARDER = 0x82300bd7c3958625581cc2F77bC6464dcEcDF3e5;
-
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        address deployer = vm.addr(deployerPrivateKey);
         vm.startBroadcast(deployerPrivateKey);
 
         // 1. Deploy ERC-8004 Identity Registry (ERC-721)
@@ -26,16 +24,18 @@ contract Deploy is Script {
         console.log("AgentReputation (ERC-8004) deployed at:", address(agentReputation));
 
         // 3. Deploy AgentRegistryV2 (IAgentRegistry bridge)
+        // Forwarder = deployer (can be updated later via setCreForwarder)
         AgentRegistryV2 agentRegistryV2 = new AgentRegistryV2(
             address(agentIdentity),
             address(agentReputation),
-            CRE_FORWARDER
+            deployer
         );
         console.log("AgentRegistryV2 deployed at:", address(agentRegistryV2));
 
-        // 4. Deploy PredictionMarket (uses V2 as IAgentRegistry)
+        // 4. Deploy PredictionMarket
+        // Forwarder = deployer (off-chain AI bot calls onReport directly)
         PredictionMarket predictionMarket = new PredictionMarket(
-            CRE_FORWARDER,
+            deployer,
             address(agentRegistryV2)
         );
         console.log("PredictionMarket deployed at:", address(predictionMarket));
@@ -46,7 +46,7 @@ contract Deploy is Script {
         console.log("AgentRegistryV2 linked to PredictionMarket");
         console.log("AgentReputation authorized AgentRegistryV2");
 
-        // 6. Deploy RewardDistributor (uses V2 as IAgentRegistry)
+        // 6. Deploy RewardDistributor
         RewardDistributor rewardDistributor = new RewardDistributor(
             address(agentRegistryV2)
         );
@@ -59,13 +59,13 @@ contract Deploy is Script {
         vm.stopBroadcast();
 
         // Summary
-        console.log("\n=== Deployment Summary ===");
+        console.log("\n=== Deployment Summary (Polkadot Hub Testnet) ===");
+        console.log("Deployer:                ", deployer);
         console.log("AgentIdentity (ERC-8004):", address(agentIdentity));
         console.log("AgentReputation (ERC-8004):", address(agentReputation));
         console.log("AgentRegistryV2:         ", address(agentRegistryV2));
         console.log("PredictionMarket:        ", address(predictionMarket));
         console.log("RewardDistributor:       ", address(rewardDistributor));
         console.log("AutoSettler:             ", address(autoSettler));
-        console.log("CRE Forwarder:           ", CRE_FORWARDER);
     }
 }

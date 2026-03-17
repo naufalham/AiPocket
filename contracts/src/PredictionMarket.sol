@@ -44,7 +44,7 @@ contract PredictionMarket is ReentrancyGuard, Ownable {
     mapping(uint256 => mapping(address => Prediction)) public predictions;
     mapping(uint256 => address[]) private _marketBettors;
 
-    address public immutable creForwarder;
+    address public forwarder;
     IAgentRegistry public agentRegistry;
 
     uint256 public constant MIN_BET = 0.001 ether;
@@ -90,9 +90,14 @@ contract PredictionMarket is ReentrancyGuard, Ownable {
 
     // ============ Constructor ============
 
-    constructor(address _creForwarder, address _agentRegistry) Ownable(msg.sender) {
-        creForwarder = _creForwarder;
+    constructor(address _forwarder, address _agentRegistry) Ownable(msg.sender) {
+        forwarder = _forwarder;
         agentRegistry = IAgentRegistry(_agentRegistry);
+    }
+
+    /// @notice Update the authorized forwarder (AI agent bot or automation contract)
+    function setForwarder(address _forwarder) external onlyOwner {
+        forwarder = _forwarder;
     }
 
     // ============ Market Lifecycle ============
@@ -224,8 +229,13 @@ contract PredictionMarket is ReentrancyGuard, Ownable {
 
     // ============ CRE Integration ============
 
+    /// @notice Called by the AI automation bot or owner to create/settle markets
+    /// @dev report[0] = 0x00 (create market) | 0x01 (settle market)
     function onReport(bytes calldata report) external {
-        require(msg.sender == creForwarder, "Only CRE forwarder");
+        require(
+            msg.sender == forwarder || msg.sender == owner(),
+            "Not authorized"
+        );
         _processReport(report);
     }
 

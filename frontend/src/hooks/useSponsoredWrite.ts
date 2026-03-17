@@ -1,9 +1,9 @@
 "use client";
 
 import { useAccount, useWriteContract, useCapabilities, useSendCalls } from "wagmi";
-import { baseSepolia } from "viem/chains";
 import { encodeFunctionData } from "viem";
 import { paymasterCapabilities } from "@/lib/paymaster";
+import { polkadotHubTestnet } from "@/lib/wagmi";
 
 /**
  * Hook that uses sponsored transactions when the wallet supports EIP-5792
@@ -17,7 +17,7 @@ export function useSponsoredWrite() {
 
   const supportsAtomicBatch = (() => {
     if (!capabilities || !paymasterCapabilities) return false;
-    const chainCaps = capabilities[baseSepolia.id];
+    const chainCaps = capabilities[polkadotHubTestnet.id];
     return chainCaps?.atomicBatch?.supported === true;
   })();
 
