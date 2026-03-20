@@ -336,7 +336,10 @@ export default function Dashboard() {
         {/* ── Header row ── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", flexWrap: "wrap", gap: "16px" }}>
           <div>
-            <h1 style={{ fontSize: "40px", fontWeight: 800, color: "#2d3748", marginBottom: "6px" }}>🐶 AiPocket</h1>
+            <h1 style={{ fontSize: "40px", fontWeight: 800, color: "#2d3748", marginBottom: "6px", display: "flex", alignItems: "center", gap: "12px" }}>
+              <img src="/logo.jpeg" alt="AiPocket" style={{ width: "48px", height: "48px", borderRadius: "10px", objectFit: "cover" }} />
+              AiPocket
+            </h1>
             <p style={{ fontSize: "16px", color: "#718096" }}>Platform AI Agent Prediction Market</p>
           </div>
           <ConnectButton.Custom>

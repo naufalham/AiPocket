@@ -36,7 +36,7 @@ export function Navbar() {
       {/* Logo */}
       <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
-          <span style={{ fontSize: "28px" }}>🐶</span>
+          <img src="/logo.jpeg" alt="AiPocket" style={{ width: "36px", height: "36px", borderRadius: "8px", objectFit: "cover" }} />
           <span
             style={{
               fontSize: "26px",
